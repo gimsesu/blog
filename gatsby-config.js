@@ -6,13 +6,21 @@ const shouldAnalyseBundle = process.env.ANALYSE_BUNDLE
 
 module.exports = {
   siteMetadata: {
-    siteTitleAlt: `Minimal Blog - Gatsby Theme`,
+    siteTitle: `gimsesu.me`,
+    siteTitleAlt: `Gimsesu Blog`,
+    siteHeadline: `gimsesu.me`,
+    siteUrl: `https://minimal-blog.lekoarts.de`,
+    siteDescription: `하루의 이야기를 적습니다`,
+    siteLanguage: `ko`,
+    siteImage: `/banner.jpg`,
+    author: `@gimsesu`
   },
   plugins: [
     {
       resolve: `@lekoarts/gatsby-theme-minimal-blog`,
       // See the theme's README for all available options
       options: {
+        showCopyButton: false,
         navigation: [
           {
             title: `Blog`,
@@ -24,13 +32,17 @@ module.exports = {
           },
         ],
         externalLinks: [
+          // {
+          //   name: `Twitter`,
+          //   url: `https://twitter.com/lekoarts_de`,
+          // },
+          // {
+          //   name: `Instagram`,
+          //   url: `https://www.instagram.com/lekoarts.de/`,
+          // },
           {
-            name: `Twitter`,
-            url: `https://twitter.com/lekoarts_de`,
-          },
-          {
-            name: `Instagram`,
-            url: `https://www.instagram.com/lekoarts.de/`,
+            name: `GitHub`,
+            url: `https://github.com/gimsesu`,
           },
         ],
       },
