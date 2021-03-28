@@ -164,6 +164,12 @@ const code = {
       content: `'diff'`,
       background: `#e6ffed`,
     },
+    "pre[class~='language-go']:before": {
+      content: `'go'`,
+      background: `#03aadb`,
+      color: `black`,
+      
+    },
   },
   '. > code[class*="language-"], .gatsby-highlight > pre[class=*="language-"]': {
     wordSpacing: `normal`,

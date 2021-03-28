@@ -2,6 +2,8 @@ require(`dotenv`).config({
   path: `.env`,
 })
 
+// const remarkSlug = require(`remark`)
+
 const shouldAnalyseBundle = process.env.ANALYSE_BUNDLE
 
 module.exports = {
@@ -16,6 +18,9 @@ module.exports = {
     author: `@gimsesu`
   },
   plugins: [
+    {
+      resolve: `gatsby`
+    },
     {
       resolve: `@lekoarts/gatsby-theme-minimal-blog`,
       // See the theme's README for all available options
@@ -89,5 +94,20 @@ module.exports = {
         openAnalyzer: false,
       },
     },
+    // {
+    //   resolve: `gatsby-plugin-mdx`,
+    //   options: {
+    //     extensions: [`.mdx`, `.md`],
+    //     gatsbyRemarkPlugins: [],
+    //   }
+    // },
+    {
+      resolve: `gatsby-source-filesystem`,
+      options: {
+        name: `posts`,
+        path: `${__dirname}/content/posts`,
+      }
+    },
+
   ].filter(Boolean),
 }
