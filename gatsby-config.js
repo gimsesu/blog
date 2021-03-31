@@ -138,6 +138,13 @@ module.exports = {
     {
       resolve: `gatsby-source-filesystem`,
       options: {
+        name: `about`,
+        path: `${__dirname}/content/pages/about`,
+      }
+    },
+    {
+      resolve: `gatsby-source-filesystem`,
+      options: {
         name: `fonts`,
         path: `${__dirname}/src/fonts`,
       }
