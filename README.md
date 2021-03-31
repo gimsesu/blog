@@ -4,6 +4,8 @@
 
 ---
 
+🏠내 사이트 - [gimsesu.me](https://www.gimsesu.me/)
+
 🚀오리지널 테마 - [`@lekoarts/gatsby-theme-minimal-blog`](https://github.com/LekoArts/gatsby-themes/tree/master/themes/gatsby-theme-minimal-blog).
 
 ---
