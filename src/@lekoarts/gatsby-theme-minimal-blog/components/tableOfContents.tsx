@@ -1,37 +1,9 @@
 /** @jsx jsx */
 import React from "react"
-import { useEffect, useState } from "react";
+import useActiveId from "../hooks/use-active-id";
 import { jsx, Link as TLink } from "theme-ui"
 
 import { Link } from "gatsby"
-
-function useActiveId(itemIds, rootMargin?) {
-    const [activeId, setActiveId] = useState(``);
-    useEffect(() => {
-        const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        setActiveId(entry.target.id);
-                    }
-                });
-            },
-            { rootMargin: `0% 0% -80% 0%` }
-        );
-
-        itemIds.forEach((id) => {
-            observer.observe(document.getElementById(id));
-        });
-
-        return () => {
-            itemIds.forEach((id) => {
-                observer.unobserve(document.getElementById(id));
-            });
-        };
-    }, [itemIds, rootMargin]);
-
-    return activeId
-}
 
 function getIds(items) {
     return items.reduce((acc, item) => {
@@ -123,7 +95,6 @@ export default function TableOfContents(props) {
             </h2>
             {renderItems(items, activeId)}
         </nav>
-
     );
 }
 
