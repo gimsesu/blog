@@ -1,8 +1,5 @@
 import { tint } from "@theme-ui/color"
 
-import "../css/typography.css"
-
-
 const code = {
   "[data-name='live-editor']": {
     fontSize: 1,

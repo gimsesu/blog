@@ -1,6 +1,7 @@
 /** @jsx jsx */
-import { jsx } from "theme-ui"
+import { jsx,  } from "theme-ui"
 import { Link } from "gatsby"
+
 import Layout from "./layout"
 import Title from "./title"
 import Listing from "./listing"
@@ -9,9 +10,9 @@ import useSiteMetadata from "../hooks/use-site-metadata"
 import replaceSlashes from "../utils/replaceSlashes"
 import { visuallyHidden } from "../styles/utils"
 // @ts-ignore
-import Hero from "../texts/hero"
+import Hero from "../texts/hero.mdx"
 // @ts-ignore
-import Bottom from "../texts/bottom"
+// import Bottom from "../texts/bottom"
 
 type PostsProps = {
   posts: {

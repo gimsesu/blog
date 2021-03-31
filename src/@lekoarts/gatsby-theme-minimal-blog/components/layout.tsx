@@ -9,9 +9,6 @@ import Footer from "./footer"
 import CodeStyles from "../styles/code"
 import SkipNavLink from "./skip-nav"
 
-import "../css/typography.css"
-
-
 type LayoutProps = { children: React.ReactNode; className?: string }
 
 const Layout = ({ children, className = `` }: LayoutProps) => (
@@ -23,6 +20,9 @@ const Layout = ({ children, className = `` }: LayoutProps) => (
         },
         html: {
           WebkitTextSizeAdjust: `100%`,
+        },
+        body: {
+          fontFamily: `"IBM Plex Sans KR", "IBM Plex Sans", -apple-system, BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji"`,
         },
         img: {
           borderStyle: `none`,

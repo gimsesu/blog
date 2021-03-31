@@ -2,9 +2,6 @@ import { merge } from "theme-ui"
 import { transparentize } from "@theme-ui/color"
 import { tailwind } from "@theme-ui/presets"
 
-import "../css/typography.css"
-
-
 const theme = merge(tailwind, {
   initialColorModeName: `light`,
   useCustomProperties: true,
@@ -40,6 +37,20 @@ const theme = merge(tailwind, {
       textRendering: `optimizeLegibility`,
       WebkitFontSmoothing: `antialiased`,
       MozOsxFontSmoothing: `grayscale`,
+    },
+    a: {
+      color: `secondary`,
+      borderBottomWidth: `2px`,
+      borderBottomStyle: `solid`,
+      borderBottomColor: `secondary`,
+      textDecoration: `none`,
+      ":hover": {
+        textDecoration: `none`,
+        color: `primary`,
+        borderBottomWidth: `2px`,
+        borderBottomStyle: `solid`,
+        borderBottomColor: `primary`,
+      },
     },
     p: {
       fontSize: [1, 1, 2],
@@ -132,6 +143,29 @@ const theme = merge(tailwind, {
     },
     hr: {
       mx: 0,
+    },
+    PostExtra: {
+      link: {
+        variant: `styles.a`,
+        borderWidth: `1px`,
+        active: {
+          variant: `styles.a`,
+          color: `secondary`,
+        },
+      },
+    },
+    TableOfContentsList: {
+      link: {
+        color: `muted`,
+        textDecoration: `none`,
+        ":hover": {
+          variant: `styles.a`,
+        },
+        active: {
+          variant: `styles.a`,
+          color: `heading`,
+        },
+      },
     },
   },
   layout: {

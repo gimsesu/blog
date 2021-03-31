@@ -2,7 +2,7 @@ require(`dotenv`).config({
   path: `.env`,
 })
 
-// const remarkSlug = require(`remark`)
+const remarkSlug = require(`remark-slug`);
 
 const shouldAnalyseBundle = process.env.ANALYSE_BUNDLE
 
@@ -15,7 +15,9 @@ module.exports = {
     siteDescription: `하루의 이야기를 적습니다`,
     siteLanguage: `ko`,
     siteImage: `/banner.jpg`,
-    author: `@gimsesu`
+    author: `@gimsesu`,
+    basePath: `/`,
+    blogPath: `/blog`
   },
   plugins: [
     {
@@ -25,6 +27,7 @@ module.exports = {
       resolve: `@lekoarts/gatsby-theme-minimal-blog`,
       // See the theme's README for all available options
       options: {
+        mdx: false,
         showCopyButton: false,
         navigation: [
           {
@@ -94,13 +97,36 @@ module.exports = {
         openAnalyzer: false,
       },
     },
-    // {
-    //   resolve: `gatsby-plugin-mdx`,
-    //   options: {
-    //     extensions: [`.mdx`, `.md`],
-    //     gatsbyRemarkPlugins: [],
-    //   }
-    // },
+    {
+      resolve: `gatsby-plugin-mdx`,
+      options: {
+        extensions: [`.mdx`, `.md`],
+        remarkPlugins: [remarkSlug],
+        gatsbyRemarkPlugins: [
+          // {
+          //   resolve: `gatsby-remark-autolink-headers`,
+          // },
+          {
+            resolve: `gatsby-remark-images`,
+            options: {
+              maxWidth: 960,
+              quality: 90,
+              linkImagesToOriginal: false,
+            },
+          },
+        ],
+        plugins: [
+          {
+            resolve: `gatsby-remark-images`,
+            options: {
+              maxWidth: 960,
+              quality: 90,
+              linkImagesToOriginal: false,
+            },
+          },
+        ],
+      },
+    },
     {
       resolve: `gatsby-source-filesystem`,
       options: {
@@ -108,6 +134,12 @@ module.exports = {
         path: `${__dirname}/content/posts`,
       }
     },
-
+    {
+      resolve: `gatsby-source-filesystem`,
+      options: {
+        name: `fonts`,
+        path: `${__dirname}/src/fonts`,
+      }
+    },
   ].filter(Boolean),
 }
