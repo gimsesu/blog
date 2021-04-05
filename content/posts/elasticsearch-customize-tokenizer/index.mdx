@@ -1,5 +1,5 @@
 ---
-title: 👨‍🏭 Elasticsearch에서 Tokenizer를 커스터마이징해보자 
+title: 👨‍🏭 Elasticsearch에서 Tokenizer를 커스터마이징 해보자 
 date: 2021-04-05
 slug: "/elasticsearch-customize-tokenizer"
 description: Elasticsearch에서 Text Analyzer - N-Gram Tokenizer를 적용했던 경험을 공유합니다.
@@ -16,7 +16,7 @@ tags:
 - Elasticsearch v7.x
 
 
-## 왜 검색이 안되죠?
+## 왜 검색이 안 되죠?
 
 내 Elasticsearch 인덱스에는 다음과 같은 URL 데이터가 저장돼 있다.
 
@@ -44,7 +44,8 @@ GET /_search
 
 ## 텍스트 분석
 
-해당 검색의 원인을 알기 위해서는 Elasticsearch가 데이터를 어떻게 저장하는지를 알아야 한다. 
+해당 검색의 원인을 알기 위해서는 Elasticsearch가 데이터를 어떻게 저장하는지를 알아야 한다.
+
 
 Elasticsearch는 텍스트를 저장할 때 '[텍스트 분석(Tesxt Analysis)](https://esbook.kimjmin.net/06-text-analysis/6.2-text-analysis)'을 수행한다. 이를 통해 특유의 '[역 색인(Inverted index)](https://www.slideshare.net/kjmorc/ss-80803233)' 구조를 형성한다.
 
@@ -108,7 +109,8 @@ GET _analyze?pretty
 }
 ```
 
-아마 표준 토크나이저가 `://`또한 구분자로 인식했던 것 같다. 하지만 `.`은 아쉽게도 구분자로 인식하지 않는다. 그래서 'welldnn.com'으로 검색하면 결과가 나오지 않았던 것이다.
+표준 토크나이저가 `://`는 구분자로 인식했지만, `.`은 그렇지 않았다. 그래서 'welldnn.com'으로 검색하면 결과가 나오지 않았던 것이다.
+
 
 ## 토크나이저 사용자 지정
 

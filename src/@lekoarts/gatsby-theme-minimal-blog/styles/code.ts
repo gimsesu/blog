@@ -38,10 +38,11 @@ const code = {
   "p > code, li > code": {
     bg: `gray.2`,
     color: `gray.8`,
-    p: `.2em .4em`,
+    p: `.1em .3em`,
     // px: 2,
     // py: 1,
-    borderRadius: `6px`,
+    borderRadius: `4px`,
+    lineHeight: `1.5`,
     fontSize: `85%`,
     fontFamily: `"IBM Plex Sans KR"`,
   },
