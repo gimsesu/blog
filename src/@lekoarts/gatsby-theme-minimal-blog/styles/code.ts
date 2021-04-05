@@ -70,6 +70,7 @@ const code = {
       fontWeight: `500`,
       fontSize: `12px`,
       letterSpacing: `0.025rem`,
+      lineHeight: `1.6`,
       padding: `0.1rem 0.5rem`,
       position: `absolute`,
       left: `1rem`,
