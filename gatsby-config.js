@@ -29,6 +29,7 @@ module.exports = {
       options: {
         formatString: `YYYY-MM-DD`,
         mdx: false,
+        showLineNumbers: false,
         showCopyButton: false,
         navigation: [
           {
@@ -149,5 +150,6 @@ module.exports = {
         path: `${__dirname}/src/fonts`,
       }
     },
+    'gatsby-plugin-theme-ui',
   ].filter(Boolean),
 }

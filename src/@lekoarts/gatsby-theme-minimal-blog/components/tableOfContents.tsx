@@ -82,9 +82,10 @@ export default function TableOfContents(props) {
                 // margin: 0,
             }}
         >
-            <h2
+            <p
                 sx={{
                     textTransform: `uppercase`,
+                    fontWeight: `700`,
                     fontSize: `0.875rem`,
                     letterSpacing: `0.075em`,
                     color: `#78757a`,
@@ -92,7 +93,7 @@ export default function TableOfContents(props) {
                 }}
             >
                 Table of Contents
-            </h2>
+            </p>
             {renderItems(items, activeId)}
         </nav>
     );

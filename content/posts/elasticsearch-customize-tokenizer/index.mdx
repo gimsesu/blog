@@ -42,7 +42,7 @@ GET /_search
 
 ## 텍스트 분석
 
-해당 검색의 원인을 알기 위해서는 Elasticsearch가 데이터를 어떻게 저장하는지를 알아야 한다. Elasticsearch는 텍스트를 저장할 때, '[텍스트 분석(Tesxt Analysis)](https://esbook.kimjmin.net/06-text-analysis/6.2-text-analysis)'을 수행한다.  이는 Elasticsearch의 특징인 '[역 색인(Inverted index)](https://www.slideshare.net/kjmorc/ss-80803233)' 구조로 데이터를 저장하기 위함이다.
+해당 검색의 원인을 알기 위해서는 Elasticsearch가 데이터를 어떻게 저장하는지를 알아야 한다. Elasticsearch는 텍스트를 저장할 때 '[텍스트 분석(Tesxt Analysis)](https://esbook.kimjmin.net/06-text-analysis/6.2-text-analysis)'을 수행한다. 이를 통해 특유의 '[역 색인(Inverted index)](https://www.slideshare.net/kjmorc/ss-80803233)' 구조를 형성한다.
 
 ### 분석기
 
@@ -50,9 +50,9 @@ GET /_search
 
 ### 토큰화
 
-여기서 눈여겨보아야 할  부분은 토크나이저다. [토크나이저(Tokenizer)](https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-tokenizers.html)는 입력된 텍스트를 '토큰'이라고 하는 개별 단어들로 분할한다. 이 작업을 토큰화(Tokenization)라고 한다. 이 과정을 통해 사용자는 구문에 포함된 일부 단어만 입력해도 구문을 검색할 수 있는 전문 검색이 가능하게 된다.
+여기서 눈여겨보아야 할 부분은 토크나이저다. [토크나이저(Tokenizer)](https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-tokenizers.html)는 입력된 텍스트를 '토큰'이라고 하는 개별 단어들로 분할한다. 이 작업을 토큰화(Tokenization)라고 한다. 이 과정을 통해 사용자는 구문에 포함된 일부 단어만 입력해도 구문을 검색할 수 있는 전문 검색이 가능하게 된다.
 
-Elasticsearch는 기본적으로 [표준 분석기(Standard analyzer)](https://www.elastic.co/guide/en/elasticsearch/reference/master/analysis-standard-analyzer.html)를 제공하며, 그 안에는 [표준 토크나이저(Standard tokenizer)](https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-standard-tokenizer.html)가 있다.  예를 살펴보자. 
+Elasticsearch는 기본적으로 [표준 분석기(Standard analyzer)](https://www.elastic.co/guide/en/elasticsearch/reference/master/analysis-standard-analyzer.html)를 제공하며, 그 안에는 [표준 토크나이저(Standard tokenizer)](https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-standard-tokenizer.html)가 있다. 예를 살펴보자. 
 
 
 
@@ -165,10 +165,10 @@ PUT my-index-url
 ```
 
 
-
 설정한 분석기를 이용해 내가 검색할 URL의 분석 결과를 확인해보자.
 
 분할되는 N-gram의 수가 많아 몇몇 구간은 생략했다. 분석된 것을 보면 최소 2부터 최대 30길이까지 분할한다. 생성된 토큰에는 'welldnn'과 'welldnn.com'이 들어 있음을 확인할 수 있다.
+
 
 ```shell
 POST my-index-url/_analyze
@@ -202,6 +202,7 @@ PUT /my-index-url
 
 매핑을 완료했다면 `my_field`에 데이터 'https://welldnn.com/'을 다시 저장하고, 검색을 진행해보자.
 
+
 ## 다시 검색
 
 ```shell
@@ -226,6 +227,7 @@ GET /_search
 
 
 아래와 같이 정상적으로 의도한 URL이 저장된 문서를 반환한다. 'welldnn.com'으로 했을 때에도 동일한 결과를 얻었다.
+
 
 ```shell
 { 

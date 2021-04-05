@@ -12,7 +12,6 @@ const code = {
     backgroundColor: tint(`primary`, 0.7),
   },
   ".prism-code": {
-    // fontSize: [1, 1, 2],
     fontSize: [1, 1, 1],
     padding: `2rem 1rem 1rem 1rem`,
     webkitOverflowScrolling: `touch`,
@@ -42,6 +41,7 @@ const code = {
     px: 2,
     py: 1,
     borderRadius: `2px`,
+    fontFamily: `"IBM Plex Sans KR"`,
   },
   ".gatsby-highlight": {
     fontSize: [1, 1, 2],
@@ -49,7 +49,9 @@ const code = {
     webkitOverflowScrolling: `touch`,
     bg: `rgb(1, 22, 39)`,
     borderRadius: `2px`,
-    mx: [0, 0, 0, -3],
+    // mx: [0, 0, 0, -3],
+    mb: [0, 0, 4, 4],
+    mt: [0, 0, 4, 4],
     ".token-line": {
       mx: -3,
       minWidth: `100%`,

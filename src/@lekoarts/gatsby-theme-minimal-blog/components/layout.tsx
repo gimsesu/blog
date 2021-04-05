@@ -15,14 +15,17 @@ const Layout = ({ children, className = `` }: LayoutProps) => (
   <React.Fragment>
     <Global
       styles={(theme) => ({
+        layout: {
+          container: {
+            padding: [3, 4],
+            maxWidth: `800px`,
+          },
+        },
         "*": {
           boxSizing: `inherit`,
         },
         html: {
           WebkitTextSizeAdjust: `100%`,
-        },
-        body: {
-          fontFamily: `"IBM Plex Sans KR", "IBM Plex Sans", -apple-system, BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji"`,
         },
         img: {
           borderStyle: `none`,
