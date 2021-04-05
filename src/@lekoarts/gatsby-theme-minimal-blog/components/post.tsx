@@ -67,7 +67,7 @@ const Post = ({ data: { post, mdx } }: PostProps) => {
       <aside
         sx={{
           position: `fixed`,
-          left: `calc(57% + 400px)`,
+          left: `calc(57% + 300px)`,
           top: `calc(6.25rem + 3rem)`,
           maxHeight: `70vh`,
           maxWidth: `18rem`,
