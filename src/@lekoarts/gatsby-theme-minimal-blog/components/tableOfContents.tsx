@@ -91,7 +91,7 @@ export default function TableOfContents(props) {
                     mt: `0`,
                 }}
             >
-                Table of Contents
+                Contents
             </h2>
             {renderItems(items, activeId)}
         </nav>

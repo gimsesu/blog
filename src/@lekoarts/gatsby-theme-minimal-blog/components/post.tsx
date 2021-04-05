@@ -74,6 +74,7 @@ const Post = ({ data: { post, mdx } }: PostProps) => {
           ml: `2rem`,
           fontSize: `14px`,
           overflow: `auto`,
+          // order: 2,
         }}
       >
         {mdx?.tableOfContents?.items && (<TableOfContents props={mdx} />)}
