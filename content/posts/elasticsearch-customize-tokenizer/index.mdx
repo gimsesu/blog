@@ -1,0 +1,286 @@
+---
+title: 👨‍🏭 Elasticsearch에서 Tokenizer를 커스터마이징해보자 
+date: 2021-04-02
+slug: "/elasticsearch-customize-tokenizer"
+description: Elasticsearch에서 Text Analyzer - N-Gram Tokenizer를 적용했던 경험을 공유합니다.
+tags:
+  - Elasticsearcch
+---
+
+나는 사내에서 URL 데이터를 처리하는 프로젝트를 맡고 있었다. 데이터의 빠른 검색을 위해 Elasticsearch를 테스트해보았는데, 특정 키워드로 URL을 검색하고 싶은데 잘 안 되는 것을 발견했다.
+
+##  🧰 준비물
+
+- Elasticsearch v7.x
+
+
+## 왜 검색이 안되죠?
+
+내 Elasticsearch 인덱스에는 다음과 같은 URL 데이터가 저장돼 있다.
+
+```text
+https://tk.welldnn.com/
+```
+
+검색할 때 root domain을 기준으로 검색을 한다고 가정하고, 'welldnn' 혹은 'welldnn.com'으로 기본적인 전문 검색(Full text query)을 했다.
+
+
+```shell
+GET /_search
+{
+  "query": {
+    "match": {
+      "message": {
+        "query": "welldnn"
+      }
+    }
+  }
+}
+```
+
+위의 쿼리와 같이 검색했을 때, 일치하는 검색 결과가 없었다. Elasticsearch에서 검색하면 일부 키워드로도 검색할 수 있다고 알고 있었는데, 어디서부터 잘못된 걸까?
+
+## 텍스트 분석
+
+해당 검색의 원인을 알기 위해서는 Elasticsearch가 데이터를 어떻게 저장하는지를 알아야 한다. Elasticsearch는 텍스트를 저장할 때, '[텍스트 분석(Tesxt Analysis)](https://esbook.kimjmin.net/06-text-analysis/6.2-text-analysis)'을 수행한다.  이는 Elasticsearch의 특징인 '[역 색인(Inverted index)](https://www.slideshare.net/kjmorc/ss-80803233)' 구조로 데이터를 저장하기 위함이다.
+
+### 분석기
+
+해당 과정은 '[분석기(Analyzer)](https://www.elastic.co/guide/en/elasticsearch/reference/current/analyzer-anatomy.html#analyzer-anatomy)'가 수행한다. 분석기는 크게 문자 필터(Character filters)와 토크나이저(Tokenizer), 토큰 필터(Token filter)로 구성돼 있다. 각 요소는 개별적으로 사용자 지정이 가능하며, 이들이 모여 다양한 언어 및 텍스트 유형에 적합한 분석기를 구성한다. 
+
+### 토큰화
+
+여기서 눈여겨보아야 할  부분은 토크나이저다. [토크나이저(Tokenizer)](https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-tokenizers.html)는 입력된 텍스트를 '토큰'이라고 하는 개별 단어들로 분할한다. 이 작업을 토큰화(Tokenization)라고 한다. 이 과정을 통해 사용자는 구문에 포함된 일부 단어만 입력해도 구문을 검색할 수 있는 전문 검색이 가능하게 된다.
+
+Elasticsearch는 기본적으로 [표준 분석기(Standard analyzer)](https://www.elastic.co/guide/en/elasticsearch/reference/master/analysis-standard-analyzer.html)를 제공하며, 그 안에는 [표준 토크나이저(Standard tokenizer)](https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-standard-tokenizer.html)가 있다.  예를 살펴보자. 
+
+
+
+```
+"The 2 QUICK Brown-Foxes jumped.over the lazy dog's bone."
+```
+
+위와 같이 텍스트가 저장된다고 하면 표준 토크나이저는 아래와 같이 분리한다. 표준 토크나이저의 분할 기준은 크게 공백(Whitespace) 및 "@"과 같은 일부 특수문자다. 
+
+```shell
+[ The, 2, Quick, Brown, Foxes, jumped.over, the, lazy, dog's, bone ]
+```
+
+분절된 단어들은 모두 저장된 텍스트를 가리킨다. 그래서 사용자는 'Quick'이나 'lazy'를 입력하면 위의 문장을 검색할 수 있게 된다.
+
+이 규칙을 살펴보니 내가 저장했던 데이터는 왜 검색이 안 됐는지 짐작이 간다. 내가 저장했던 URL은 어떻게 토큰화가 되어 있는지 살펴보자.
+
+
+```shell
+GET _analyze?pretty
+{ 
+  "field": "my_field",  
+  "text": "https://tk.welldnn.com/" 
+}
+```
+
+
+"https", "tk.welldnn.com" 단 두 개의 토큰으로만 분할되어 있다.
+
+
+```shell
+{
+	"tokens" : [
+		{
+			"token" : "https",
+			"start_offset" : 0,
+			"end_offset" : 5,
+			"type" : "<ALPHANUM>",
+			"position" : 0,	
+		},
+		{
+			"token" : "tk.welldnn.com",
+			"start_offset" : 22,
+			"end_offset" : 8,
+			"type" : "<ALPHANUM>",
+			"position" : 1
+		}
+	]
+}
+```
+
+아마 표준 토크나이저가 `://`또한 구분자로 인식했던 것 같다. 하지만 `.`은 아쉽게도 구분자로 인식하지 않는다. 그래서 'welldnn.com'으로 검색하면 결과가 나오지 않았던 것이다.
+
+## 토크나이저 사용자 지정
+
+앞서 말했듯 토크나이저는 사용자 지정이 가능하다. 내가 원하는 규칙으로 텍스트를 분절하여 'wellldnn'이나 'welldnn.com'을 입력하면 검색이 되도록 해보자. 다행히 Elasticsearch는 내장 토크나이저들을 통해 다양한 분절 규칙을 제공한다.
+
+### N-gram Tokenizer
+
+[N-gram tokenizer](https://www.elastic.co/guide/en/elasticsearch/reference/master/analysis-ngram-tokenizer.html)는 입력된 문자열 중 하나의 문자가 들어올 때마다 지정된 길이의 N-gram을 출력한다. 공백을 사용하지 않는 언어들을 다룰 때 유용하다.
+
+
+기본 ngram tokenizer는 텍스트를 최소 길이 1에서 최대 길이 2의 N-gram으로 분할한다.
+
+
+```shell
+POST _analyze
+{
+  "tokenizer": "ngram",
+  "text": "Quick Fox"
+}
+
+# 응답
+[ Q, Qu, u, ui, i, ic, c, ck, k, "k ", " ", " F", F, Fo, o, ox, x ]
+```
+
+공백 관계없이 문자열을 특정 길이에 따라 다양하게 분리를 해주는 것을 확인하니 URL을 분석하고 검색하는 데 효과적인 방법이라는 것을 알겠다. 이제 내 인덱스에 설정하고 테스트해보자.
+
+URL의 경우 최소 2 글자로 검색을 해야하는 경우가 있다. (e.g. `http://www.lm.co.kr/`) 최소 2 글자, 최대 30 글자로 gram의 단위를 설정한다. 토큰에 포함할 문자 유형(`token_chars`)으로는 일반 문자(`letter`), 숫자(`digit`), [구두점](https://www.thepunctuationguide.com/)(`punctuation`)으로 설정했다.
+
+>💡 세부 설정에 대한 자세한 사항은 [여기서](https://www.elastic.co/guide/en/elasticsearch/reference/master/analysis-ngram-tokenizer.html#_configuration_14) 확인할 수 있다.
+
+
+
+```json
+PUT my-index-url
+{
+  "settings": {
+    "analysis": {
+			"analyzer": {
+				"my_analyzer": {
+					"tokenizer": "my_tokenizer"
+				}
+			},
+			"tokenizer": {
+				"my_tokenizer": {
+					"type": "ngram",
+					"min_gram": 2,
+					"max_gram": 30,
+					"token_chars": [
+						"letter",
+						"digit",
+						"punctuation"
+					]
+				}
+			}
+		}
+	}
+}
+```
+
+
+
+설정한 분석기를 이용해 내가 검색할 URL의 분석 결과를 확인해보자.
+
+분할되는 N-gram의 수가 많아 몇몇 구간은 생략했다. 분석된 것을 보면 최소 2부터 최대 30길이까지 분할한다. 생성된 토큰에는 'welldnn'과 'welldnn.com'이 들어 있음을 확인할 수 있다.
+
+```shell
+POST my-index-url/_analyze
+{
+  "analyzer": "my_analyzer",
+  "text" : "https://tk.welldnn.com/"
+}
+
+# 응답
+[ ht, htt, (...), welldn, welldnn, welldnn., (...), welldnn.com, (...) ]
+```
+
+
+## Mapping
+
+사용자 지정한 분석기를 이용하려면 해당 필드에 직접 적용해줘야 한다. 이 과정을 [매핑(Mapping)](https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping.html)이라고 한다. 
+
+```shell
+PUT /my-index-url
+{
+	"mappings": {
+		"properties": {
+			"my_field": {
+				"type": "text",
+				"analyzer": "my_analyzer"
+			}
+		}
+	}
+}`
+```
+
+매핑을 완료했다면 `my_field`에 데이터 'https://welldnn.com/'을 다시 저장하고, 검색을 진행해보자.
+
+## 다시 검색
+
+```shell
+GET /_search
+{
+  "query": {
+    "bool": {
+      "must": {
+      	"term" {
+      		"my_field.ngram": "welldnn"
+      	}
+      }
+    }
+  }
+}
+```
+
+>💡 `bool` - `must`: 쿼리에 일치하는 결과물을 모두 반환
+
+
+>💡 `term`: 입력된 검색어를 정확하게 포함하는 문서를 반환
+
+
+아래와 같이 정상적으로 의도한 URL이 저장된 문서를 반환한다. 'welldnn.com'으로 했을 때에도 동일한 결과를 얻었다.
+
+```shell
+{ 
+  "took" : 43, 
+  "timed_out" : false, 
+  "_shards" : { 
+    "total" : 1, 
+    "successful" : 1, 
+    "skipped" : 0, 
+    "failed" : 0 
+  }, 
+  "hits" : { 
+    "total" : { 
+      "value" : 1, 
+      "relation" : "eq" 
+    }, 
+    "max_score" : 1.0, 
+    "hits" : [ 
+      { 
+        "_index" : "my-indxe-url", 
+        "_type" : "_doc", 
+        "_id" : "YKolMHUBBpbv40eG180S", 
+        "_score" : 1.0, 
+        "_source" : { 
+          "my_field" : "https://tk.welldnn.com/" 
+        } 
+      } 
+    ] 
+  } 
+}
+```
+
+## 결론
+
+실제로 해당 설정들을 적용할 땐 잘 몰랐는데, 글을 쓰면서 Elasticsearch에 저장하는 텍스트 데이터들이 어떤 원리로 저장되고 관리되는지 자세히 알 수 있었다. 
+
+---
+
+
+
+## 참고
+
+- [도메인 이름의 구조 - 생활코딩. (Website. 2021.04.05)](https://opentutorials.org/course/3276/20303)
+
+- Elasticsearch Guide [7.12] | Elastic. (Website. 2021.04.05)
+  - [Match query](https://www.elastic.co/guide/en/elasticsearch/reference/7.11/query-dsl-match-query.html#query-dsl-match-query)
+  - [Text analysis](https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis.html)
+  - [Anatomy of an analyzer](https://www.elastic.co/guide/en/elasticsearch/reference/current/analyzer-anatomy.html#analyzer-anatomy)
+  - [Tokenizer](https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-tokenizers.html)
+  - [Standard analyzer](https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-standard-analyzer.html)
+  - [Standard tokenizer](https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-standard-tokenizer.html#analysis-standard-tokenizer)
+  - [Mapping](https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping.html)
+  - [Explicit mapping](https://www.elastic.co/guide/en/elasticsearch/reference/current/explicit-mapping.html)
+- Elasticsearch Guide [master] | Elastic. (Website. 2021.04.05)
+  - [N-gram tokenizer](https://www.elastic.co/guide/en/elasticsearch/reference/master/analysis-ngram-tokenizer.html)
+  - [Term query](https://www.elastic.co/guide/en/elasticsearch/reference/master/query-dsl-term-query.html#query-dsl-term-query)
+
+- [텍스트 분석 - Text Analysis - Elastic 가이드북. (Website. 2021.04.05)](https://esbook.kimjmin.net/06-text-analysis/6.2-text-analysis)

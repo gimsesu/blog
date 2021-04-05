@@ -47,8 +47,8 @@ function renderItems(items, activeId, isRecursiveCall?: boolean) {
                                 marginY: 2,
                                 fontWeight: `normal`,
                                 color: `secondary`,
-                                borderBottom: activeId === item.url.slice(1)
-                                    ? `1px solid`
+                                textDecoration: activeId === item.url.slice(1)
+                                    ? `underline`
                                     : `null`,
                                 transition: `all 100ms cubic-bezier(0.4,0,0.2,1)`
                             }}
