@@ -30,6 +30,9 @@ const theme = merge(tailwind, {
   fontWeights: {
     body: 450,
   },
+  lineHeights: {
+    body: `200%`,
+  },
   styles: {
     root: {
       color: `text`,
@@ -43,16 +46,16 @@ const theme = merge(tailwind, {
     },
     p: {
       fontSize: [1, 1, 1, 2],
-      letterSpacing: `-0.003em`,
+      letterSpacing: `0em`,
       lineHeight: `body`,
       "--baseline-multiplier": 0.179,
       "--x-height-multiplier": 0.35,
-      wordBreak: `break-word`,
+      wordBreak: `kepp-all`,
     },
     ul: {
       li: {
         fontSize: [1, 1, 2],
-        letterSpacing: `-0.003em`,
+        letterSpacing: `0em`,
         lineHeight: `body`,
         "--baseline-multiplier": 0.179,
         "--x-height-multiplier": 0.35,
@@ -61,7 +64,7 @@ const theme = merge(tailwind, {
     ol: {
       li: {
         fontSize: [1, 1, 2],
-        letterSpacing: `-0.003em`,
+        letterSpacing: `0em`,
         lineHeight: `body`,
         "--baseline-multiplier": 0.179,
         "--x-height-multiplier": 0.35,

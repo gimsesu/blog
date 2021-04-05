@@ -73,6 +73,7 @@ const Post = ({ data: { post, mdx } }: PostProps) => {
           maxWidth: `18rem`,
           ml: `2rem`,
           fontSize: `14px`,
+          lineHeight: `1.625`,
           overflow: `auto`,
           // order: 2,
         }}
