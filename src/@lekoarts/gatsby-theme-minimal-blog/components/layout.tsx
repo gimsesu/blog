@@ -33,6 +33,7 @@ const Layout = ({ children, className = `` }: LayoutProps) => (
         pre: {
           fontFamily: `"IBM Plex Mono", monospace`,
           fontSize: `1em`,
+          fontWeight: `450`,
         },
         "[hidden]": {
           display: `none`,

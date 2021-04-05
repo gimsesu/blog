@@ -38,9 +38,11 @@ const code = {
   "p > code, li > code": {
     bg: `gray.2`,
     color: `gray.8`,
-    px: 2,
-    py: 1,
-    borderRadius: `2px`,
+    p: `.2em .4em`,
+    // px: 2,
+    // py: 1,
+    borderRadius: `6px`,
+    fontSize: `85%`,
     fontFamily: `"IBM Plex Sans KR"`,
   },
   ".gatsby-highlight": {
@@ -64,6 +66,7 @@ const code = {
       bg: `white`,
       borderRadius: `0 0 0.25rem 0.25rem`,
       color: `black`,
+      fontWeight: `500`,
       fontSize: `12px`,
       letterSpacing: `0.025rem`,
       padding: `0.1rem 0.5rem`,

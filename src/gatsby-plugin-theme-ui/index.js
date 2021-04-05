@@ -39,7 +39,8 @@ const theme = merge(tailwind, {
       MozOsxFontSmoothing: `grayscale`,
     },
     p: {
-      fontSize: [1, 1, 2, 2],
+      fontSize: [1, 1, 1, 2],
+      fontWeight: `450`,
       letterSpacing: `-0.003em`,
       lineHeight: `body`,
       "--baseline-multiplier": 0.179,
