@@ -35,7 +35,7 @@ const code = {
     fontFamily: `"IBM Plex Mono", monospace`,
     display: `inline-block`,
   },
-  "p > code, li > code": {
+  "p > code, li > code, h2 > code, h3 > code, h4 > code, h5 > code, h6 > code, a > code": {
     bg: `gray.2`,
     color: `gray.8`,
     p: `.1em .3em`,
