@@ -38,14 +38,14 @@ GET /_search
 }
 ```
 
-위의 쿼리와 같이 검색했을 때, 일치하는 검색 결과가 없었다. Elasticsearch에서 검색하면 일부 키워드로도 검색할 수 있다고 알고 있었는데, 어디서부터 잘못된 걸까?
+위의 쿼리로 검색했을 때, 일치하는 검색 결과가 없었다. Elasticsearch에서 검색하면 일부 키워드로도 검색할 수 있다고 알고 있었는데, 어디서부터 잘못된 걸까?
 
 ## 텍스트 분석
 
 해당 검색의 원인을 알기 위해서는 Elasticsearch가 데이터를 어떻게 저장하는지를 알아야 한다.
 
 
-Elasticsearch는 텍스트를 저장할 때 '[텍스트 분석(Tesxt Analysis)](https://esbook.kimjmin.net/06-text-analysis/6.2-text-analysis)'을 수행한다. 이를 통해 특유의 '[역 색인(Inverted index)](https://www.slideshare.net/kjmorc/ss-80803233)' 구조를 형성한다.
+Elasticsearch는 텍스트를 저장할 때 '[텍스트 분석(Text Analysis)](https://esbook.kimjmin.net/06-text-analysis/6.2-text-analysis)'을 수행한다. 이를 통해 특유의 '[역 색인(Inverted index)](https://www.slideshare.net/kjmorc/ss-80803233)' 구조를 형성한다.
 
 ### 분석기
 
