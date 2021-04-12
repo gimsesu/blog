@@ -57,25 +57,37 @@ const theme = merge(tailwind, {
       wordBreak: `keep-all`,
     },
     ul: {
+      mt: `0.5rem`,
       li: {
         fontSize: [1, 1, 1, 2],
         letterSpacing: `0em`,
         lineHeight: `body`,
         "--baseline-multiplier": 0.179,
         "--x-height-multiplier": 0.35,
-        pt: `0.5rem`,
+        pb: `0.5rem`,
+        ul: {
+          mt: `0rem`,
+        },
         li: {
-          pt: `0`,
+          pb: `0rem`,
         },
       },
     },
     ol: {
+      mt: `0.5rem`,
       li: {
         fontSize: [1, 1, 1, 2],
         letterSpacing: `0em`,
         lineHeight: `body`,
         "--baseline-multiplier": 0.179,
         "--x-height-multiplier": 0.35,
+        pb: `0.5rem`,
+        ul: {
+          mt: `0rem`,
+        },
+        li: {
+          pb: `0rem`,
+        },
       },
     },
     h1: {
