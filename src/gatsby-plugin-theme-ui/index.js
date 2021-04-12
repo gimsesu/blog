@@ -46,7 +46,7 @@ const theme = merge(tailwind, {
     },
     p: {
       fontSize: [1, 1, 1, 2],
-      fontFamily: `"Noto Serif KR", "Nanum Myeongjo"`,
+      fontFamily: `"Noto Serif KR"`,
       fontWeight: `500`,
       mt: `0.5rem`,
       mb: `0.5rem`,
