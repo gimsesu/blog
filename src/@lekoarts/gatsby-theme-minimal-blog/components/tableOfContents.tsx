@@ -39,7 +39,7 @@ function renderItems(items, activeId, isRecursiveCall?: boolean) {
                     return null
                 }
                 return (
-                    <li key={item.url} sx={{ mt: isRecursiveCall ? `0rem` : `0.3rem` }}>
+                    <li key={item.url} sx={{ mb: isRecursiveCall ? `0rem` : `0.4rem` }}>
                         <TLink
                             as={Link}
                             sx={{
