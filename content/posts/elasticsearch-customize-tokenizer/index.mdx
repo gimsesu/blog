@@ -7,14 +7,12 @@ tags:
   - Elasticsearcch
 ---
 
-나는 사내에서 URL 데이터를 처리하는 프로젝트를 맡고 있었다. 데이터의 빠른 검색을 위해 Elasticsearch를 테스트해보았는데, 일부 단어만으로 URL을 검색했을 때 잘 안 되는 것을 발견했다.
+나는 사내에서 URL 데이터를 처리하는 프로젝트를 맡고 있었다. 데이터의 빠른 검색을 위해 Elasticsearch를 사용해 검색 테스트를 해보았는데, URL 데이터를 저장하고 검색했을 때 생각보다 제대로 검색이 되지 않는 문제를 발견했다.
 
-
-
-## 🧰 준비물 `안녕`
-
+## 🧰 준비물
 
 - Elasticsearch v7.x
+
 
 ## 왜 검색이 안 되죠?
 
@@ -24,7 +22,7 @@ tags:
 https://tk.welldnn.com/
 ```
 
-검색할 때 root domain을 기준으로 검색을 한다고 가정하고, 'welldnn' 혹은 'welldnn.com'으로 기본적인 전문 검색(Full text query)을 했다.
+Root domain을 기준으로 검색한다고 가정하고, 'welldnn' 혹은 'welldnn.com'으로 기본적인 전문 검색(Full text query)을 했다.
 
 
 ```shell
@@ -55,7 +53,7 @@ Elasticsearch는 텍스트를 저장할 때 '[텍스트 분석(Tesxt Analysis)](
 
 ### 토큰화
 
-여기서 눈여겨보아야 할 부분은 [토크나이저(Tokenizer)](https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-tokenizers.html)다. 토크나이저는 입력된 텍스트를 '토큰'이라고 하는 개별 단어들로 분할한다. 이 작업을 토큰화(Tokenization)라고 한다. 이 과정을 통해 사용자는 구문에 포함된 일부 단어만 입력해도 구문을 검색할 수 있는 전문 검색이 가능하게 된다.
+여기서 눈여겨보아야 할 부분은 [토크나이저(Tokenizer)](https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-tokenizers.html)다. 토크나이저는 입력된 텍스트를 '토큰'이라고 하는 개별 단어들로 분할한다. 이 작업을 토큰화(Tokenization)라고 한다. 이 과정을 통해 사용자는 일부 단어만 입력해도 전체 구문을 검색할 수 있는 전문 검색(Full text query)이 가능하다.
 
 Elasticsearch는 기본적으로 [표준 분석기(Standard analyzer)](https://www.elastic.co/guide/en/elasticsearch/reference/master/analysis-standard-analyzer.html)를 제공하며, 그 안에는 [표준 토크나이저(Standard tokenizer)](https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-standard-tokenizer.html)가 있다.
 
@@ -65,13 +63,14 @@ Elasticsearch는 기본적으로 [표준 분석기(Standard analyzer)](https://w
 "The 2 QUICK Brown-Foxes jumped.over the lazy dog's bone."
 ```
 
- 표준 토크나이저는 아래와 같이 토큰화한다. 표준 토크나이저의 분할 기준은 크게 공백(Whitespace) 및 "@"과 같은 일부 특수문자다. 
+ 표준 토크나이저는 아래와 같이 토큰화한다. 표준 토크나이저의 분할 기준은 크게 `공백(Whitespace)` 및 `@`과 같은 일부 특수문자다. 
 
 ```shell
 [ The, 2, Quick, Brown, Foxes, jumped.over, the, lazy, dog's, bone ]
 ```
 
-분절된 단어들은 모두 저장된 텍스트를 가리킨다. 그래서 사용자는 'Quick'이나 'lazy'를 입력하면 위의 문장을 검색할 수 있게 된다.
+분절된 단어들은 모두 앞서 저장된 텍스트를 가리킨다. 그래서 사용자는 'Quick'이나 'lazy'를 입력하면 위의 문장을 검색할 수 있게 된다.
+
 
 이 규칙을 살펴보니 내가 저장했던 데이터는 왜 검색이 안 됐는지 짐작이 간다. 내가 저장했던 URL은 어떻게 토큰화가 되어 있는지 살펴보자.
 
@@ -141,9 +140,7 @@ POST _analyze
 
 URL의 경우 최소 2 글자로 검색을 해야하는 경우가 있다. (e.g. `http://www.lm.co.kr/`) 최소 2 글자, 최대 30 글자로 gram의 단위를 설정한다. 토큰에 포함할 문자 유형(`token_chars`)으로는 일반 문자(`letter`), 숫자(`digit`), [구두점(`punctuation`)](https://www.thepunctuationguide.com/)으로 설정했다.
 
->💡 세부 설정에 대한 자세한 사항은 [여기서](https://www.elastic.co/guide/en/elasticsearch/reference/master/analysis-ngram-tokenizer.html#_configuration_14) 확인할 수 있다.
-
-
+>💡 `N-gram tokenizer`의 세부 설정은 [여기서](https://www.elastic.co/guide/en/elasticsearch/reference/master/analysis-ngram-tokenizer.html#_configuration_14) 자세히 확인할 수 있다.
 
 ```json
 PUT my-index-url
@@ -280,11 +277,9 @@ GET /_search
 
 ## 📜 참고
 
+
 - [도메인 이름의 구조 - 생활코딩. (Website. 2021.04.05)](https://opentutorials.org/course/3276/20303)
-
 - [검색엔진이 데이터를 다루는 법 김종민. (Website. 2021.04.05)](https://www.slideshare.net/kjmorc/ss-80803233)
-
-
 - Elasticsearch Guide [7.12] | Elastic. (Website. 2021.04.05)
   - [Match query](https://www.elastic.co/guide/en/elasticsearch/reference/7.11/query-dsl-match-query.html#query-dsl-match-query)
   - [Text analysis](https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis.html)
@@ -297,5 +292,5 @@ GET /_search
 - Elasticsearch Guide [master] | Elastic. (Website. 2021.04.05)
   - [N-gram tokenizer](https://www.elastic.co/guide/en/elasticsearch/reference/master/analysis-ngram-tokenizer.html)
   - [Term query](https://www.elastic.co/guide/en/elasticsearch/reference/master/query-dsl-term-query.html#query-dsl-term-query)
-
 - [텍스트 분석 - Text Analysis - Elastic 가이드북. (Website. 2021.04.05)](https://esbook.kimjmin.net/06-text-analysis/6.2-text-analysis)
+

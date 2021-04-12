@@ -193,3 +193,59 @@
     font-display: swap;
 }
 
+/* Noto Serif KR */
+@font-face {
+    font-family: "Noto Serif KR";
+    font-style: normal;
+    font-weight: 200;
+    src: url("noto-serif-kr-v7-latin_korean-200.woff2") format("woff2"), url("noto-serif-kr-v7-latin_korean-200.woff") format("woff");
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Noto Serif KR";
+    font-style: normal;
+    font-weight: 300;
+    src: url("noto-serif-kr-v7-latin_korean-300.woff2") format("woff2"), url("noto-serif-kr-v7-latin_korean-300.woff") format("woff");
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Noto Serif KR";
+    font-style: normal;
+    font-weight: 400;
+    src: url("noto-serif-kr-v7-latin_korean-regular.woff2") format("woff2"), url("noto-serif-kr-v7-latin_korean-regular.woff") format("woff");
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Noto Serif KR";
+    font-style: normal;
+    font-weight: 500;
+    src: url("noto-serif-kr-v7-latin_korean-500.woff2") format("woff2"), url("noto-serif-kr-v7-latin_korean-500.woff") format("woff");
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Noto Serif KR";
+    font-style: normal;
+    font-weight: 600;
+    src: url("noto-serif-kr-v7-latin_korean-600.woff2") format("woff2"), url("noto-serif-kr-v7-latin_korean-600.woff") format("woff");
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Noto Serif KR";
+    font-style: normal;
+    font-weight: 700;
+    src: url("noto-serif-kr-v7-latin_korean-700.woff2") format("woff2"), url("noto-serif-kr-v7-latin_korean-700.woff") format("woff");
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Noto Serif KR";
+    font-style: normal;
+    font-weight: 900;
+    src: url("noto-serif-kr-v7-latin_korean-900.woff2") format("woff2"), url("noto-serif-kr-v7-latin_korean-900.woff") format("woff");
+    font-display: swap;
+}

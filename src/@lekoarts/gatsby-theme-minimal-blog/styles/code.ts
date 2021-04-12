@@ -45,6 +45,7 @@ const code = {
     lineHeight: `1.5`,
     fontSize: `85%`,
     fontFamily: `"IBM Plex Sans KR"`,
+    fontWeight: `450`,
   },
   ".gatsby-highlight": {
     fontSize: [1, 1, 2],

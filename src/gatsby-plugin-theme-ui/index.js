@@ -31,7 +31,7 @@ const theme = merge(tailwind, {
     body: 450,
   },
   lineHeights: {
-    body: `200%`,
+    body: `170%`,
   },
   styles: {
     root: {
@@ -46,7 +46,11 @@ const theme = merge(tailwind, {
     },
     p: {
       fontSize: [1, 1, 1, 2],
-      letterSpacing: `0em`,
+      fontFamily: `"Noto Serif KR", "Nanum Myeongjo"`,
+      fontWeight: `500`,
+      mt: `0.5rem`,
+      mb: `0.5rem`,
+      letterSpacing: `-0.02em`,
       lineHeight: `body`,
       "--baseline-multiplier": 0.179,
       "--x-height-multiplier": 0.35,
@@ -59,6 +63,10 @@ const theme = merge(tailwind, {
         lineHeight: `body`,
         "--baseline-multiplier": 0.179,
         "--x-height-multiplier": 0.35,
+        pt: `0.5rem`,
+        li: {
+          pt: `0`,
+        },
       },
     },
     ol: {
