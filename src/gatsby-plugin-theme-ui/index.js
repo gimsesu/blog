@@ -45,11 +45,11 @@ const theme = merge(tailwind, {
       MozOsxFontSmoothing: `grayscale`,
     },
     p: {
-      fontSize: [1, 1, 1, 2],
+      fontSize: [1, 1, 1, `18px`],
       fontFamily: `"Noto Serif KR"`,
       fontWeight: `500`,
-      mt: `0.5rem`,
-      mb: `0.5rem`,
+      mt: `0rem`,
+      mb: `1rem`,
       letterSpacing: `-0.02em`,
       lineHeight: `body`,
       "--baseline-multiplier": 0.179,
@@ -59,7 +59,7 @@ const theme = merge(tailwind, {
     ul: {
       mt: `0.5rem`,
       li: {
-        fontSize: [1, 1, 1, 2],
+        fontSize: [1, 1, 1, `18px`],
         letterSpacing: `0em`,
         lineHeight: `body`,
         "--baseline-multiplier": 0.179,
@@ -76,7 +76,7 @@ const theme = merge(tailwind, {
     ol: {
       mt: `0.5rem`,
       li: {
-        fontSize: [1, 1, 1, 2],
+        fontSize: [1, 1, 1, `18px`],
         letterSpacing: `0em`,
         lineHeight: `body`,
         "--baseline-multiplier": 0.179,
@@ -93,32 +93,38 @@ const theme = merge(tailwind, {
     h1: {
       variant: `text.heading`,
       fontSize: [4, 5, 5],
-      mt: 4,
+      mt: 5,
+      mb: 3,
     },
     h2: {
       variant: `text.heading`,
       fontSize: [3, 4, 4],
-      mt: 4,
+      mt: 5,
+      mb: 3,
     },
     h3: {
       variant: `text.heading`,
       fontSize: [2, 3, 3],
       mt: 4,
+      mb: 2,
     },
     h4: {
       variant: `text.heading`,
       fontSize: [1, 2, 2],
-      mt: 3,
+      mt: 4,
+      mb: 2,
     },
     h5: {
       variant: `text.heading`,
       fontSize: [1, 1, 1],
-      mt: 3,
+      mt: 4,
+      mb: 2,
     },
     h6: {
       variant: `text.heading`,
       fontSize: 1,
-      mb: 2,
+      mt: 4,
+      mb: 3,
     },
     blockquote: {
       borderLeftColor: `primary`,

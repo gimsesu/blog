@@ -54,8 +54,7 @@ const code = {
     bg: `rgb(1, 22, 39)`,
     borderRadius: `2px`,
     // mx: [0, 0, 0, -3],
-    mb: [0, 0, 4, 4],
-    mt: [0, 0, 4, 4],
+    mb: [2, 3, 3, 4],
     ".token-line": {
       mx: -3,
       minWidth: `100%`,
@@ -209,7 +208,7 @@ const code = {
     px: 3,
     py: 2,
     fontFamily: `"IBM Plex Mono", monospace`,
-    mx: [0, 0, 0, -3],
+    mx: [0, 0, 0, 0],
   },
   "[data-name='live-preview'], [data-name='live-editor']": {
     mx: [0, 0, 0, -3],

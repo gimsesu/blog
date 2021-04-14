@@ -68,7 +68,7 @@ const Post = ({ data: { post, mdx } }: PostProps) => {
         sx={{
           position: `fixed`,
           left: `calc(57% + 300px)`,
-          top: `calc(6.25rem + 3rem)`,
+          top: `calc(6.25rem + 0.5rem)`,
           maxHeight: `70vh`,
           maxWidth: `18rem`,
           ml: `2rem`,
