@@ -114,6 +114,9 @@ module.exports = {
               maxWidth: 960,
               quality: 90,
               linkImagesToOriginal: false,
+              wrapperStyle: {
+                boxShadow:`null`,
+              },
             },
           },
         ],
@@ -124,6 +127,9 @@ module.exports = {
               maxWidth: 960,
               quality: 90,
               linkImagesToOriginal: false,
+              wrapperStyle: {
+                boxShadow: `null`,
+              },
             },
           },
         ],
