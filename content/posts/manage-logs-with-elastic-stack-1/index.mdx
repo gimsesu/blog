@@ -25,7 +25,7 @@ tags:
 
 사내 프로젝트로 운영하고 있는 여러 API Server들이 있다. 매일 1 개 이상의 요청/응답/에러 이벤트가 발생하며 그 이벤트는 Log 파일에 기록하거나 MariaDB 테이블에 저장하고 있다. 
 
-이러한 로그들은 추후 이슈가 발생했을 때 원인을 파악하기 위해 가장 먼저 확인하는 데이터다. 신속하게 해결하려면 빠르게 확인할 수 있어야 하고, 특정 항목/값을 기준으로 알맞게 검색할 수 있어야 한다. 
+이러한 로그들은 추후 이슈가 발생했을 때 원인을 파악하기 위해 가장 먼저 확인하는 데이터다. 신속히 해결하려면 빠르게 확인할 수 있어야 하고, 특정 항목/값을 기준으로 알맞게 검색할 수 있어야 한다. 
 
 Vim을 이용한 로그파일의 탐색은 직접 쿼리를 입력해주어야 하는 것이 불편했다. 특정 값에 대해 일괄적으로 집계할 수도 없었다. 그리고 항상 파일을 확인하려면 앱이 구동되고 있는 로컬 머신에 접근해야 했다.
 
@@ -77,7 +77,7 @@ Beats를 통해 수집한 데이터는 Elasticsearch로 직접 전송해 바로 
 
 Kibana는 Elasticsearch를 데이터 저장소로 사용하도록 설계됐다. 데이터는 구조화되거나 구조화되지 않은 텍스트, 숫자, 시계열 데이터, 지리 공간 데이터, 로그, 메트릭, 보안 이벤트 등 다양한 형식을 포함한다. 
 
-## 🤹🏼 로그 수집 그거 어떻게 하는 건데
+## 🤨 로그 수집 그거 어떻게 하는 건데
 
 Stack은 아래와 같은 흐름으로 로그를 수집하고 관리한다. 
 
@@ -106,7 +106,7 @@ Linux 환경에서 진행했으며 설치 방법은 OS에 따라 상이하다.
 
 간편한 구현과 세부 설정을 위해 Elastic에서 제공하는 Docker image를 이용해 Elasticsearch와 Kibana를 설치했다.
 
-- [Docker를 통한 설치 가이드](https://www.elastic.co/guide/en/elastic-stack-get-started/current/get-started-docker.html)
+- [Docker를 이용한 설치 가이드](https://www.elastic.co/guide/en/elastic-stack-get-started/current/get-started-docker.html)
 
 Docker Compose를 이용해 설치했다. 내가 작성한 compose 파일은 아래와 같다.
 
