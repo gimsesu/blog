@@ -34,7 +34,7 @@ ERROR: [1] bootstrap checks failed
 
  [Bootstrap 검사 단계](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/bootstrap-checks.html)에서 `vm.max_map_count`의 값이 부족하니 상향하라는 내용이었다.
 
-###  올리지 뭐
+### 올리지 뭐!
 
 `vm.max_map_count`의 기본값은 Linux의 경우 `65,530`이다. Elasticsearch를 실행하기 위해서는 최소 `262,144`로 [상향하는 것을 권장한다.](https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html#_set_vm_max_map_count_to_at_least_262144)
 
@@ -58,7 +58,7 @@ sysctl -w vm.max_map_count=262144
 
 ### 영구적 변경
 
-`/etc/sysctl.conf` 파일을 직접 편집한 후, 호스트를 재부팅한다. 혹은 `sysctl -p` 명령어를 이용해 재부팅하지 않고 바로 변경 사항을 적용할 수 있다.
+`/etc/sysctl.conf` 파일을 직접 편집한 후 호스트를 재부팅한다. 혹은 `sysctl -p` 명령어를 이용해 재부팅하지 않고 바로 변경 사항을 적용할 수 있다.
 
 ```shell
 $ vi /etc/sysctl.conf
@@ -118,7 +118,7 @@ vm.max_map_count = 262144
 
 ### 🕵🏼 추측 1
 
-- Elasticsearch는 자신의 가상 주소 공간에 특정 파일을 매핑하는 작업이 빈번하게 일어나는 듯 하다.  
+- Elasticsearch는 자신의 가상 주소 공간에 특정 파일을 매핑하는 작업이 많이 일어나는 듯하다.
 
 ## Virtual memory
 
@@ -135,11 +135,11 @@ Elasticsearch를 프로덕션 레벨에서 사용하려 한다면 실행 전 [�
 
 위 인용문에서는 `mmap` 개수의 제한이 너무 낮다'라고 했다. `mmap`은 메모리 매핑을 실행하고, 그 결과물은 [메모리 맵 파일(memory mapped file)](https://ko.wikipedia.org/wiki/%EB%A9%94%EB%AA%A8%EB%A6%AC_%EB%A7%B5_%ED%8C%8C%EC%9D%BC)이다.
 
-💡 [`mmap`](https://en.wikipedia.org/wiki/Mmap): `유닉스(Unix) 시스템 호출(System call. syscall)로서, 메모리 매핑을 실행하는 함수. `  
+💡 [`mmap`](https://en.wikipedia.org/wiki/Mmap): `유닉스(Unix) 시스템 호출(System call. syscall)로서, 메모리 매핑을 실행하는 함수.`
 
 ### 🕵🏼 추측 2
 
-- Elasticsearch가 `mmapfs` 디렉터리를 이용하여 [인덱스(Index)](https://esbook.kimjmin.net/03-cluster/3.2-index-and-shards)를 저장하는 과정에서 `mmap`을 이용한 빈번한 메모리 매핑 작업이 발생하고, 그 결과로 많은 메모리 맵 파일이 생길 수 있다.
+- Elasticsearch가 `mmapfs` 디렉터리를 이용하여 [인덱스(Index)](https://esbook.kimjmin.net/03-cluster/3.2-index-and-shards)를 저장하는 과정에서 `mmap`을 이용한 많은 수의 메모리 매핑 작업이 발생할 수 있고, 그 결과로 많은 메모리 맵 파일이 생성될 수 있다.
 
 - 생성되는 메모리 맵 파일의 수는, Linux의 경우 기본적으로 정해놓은 `max_map_count`가 Elasticsearch 관점에서는 매우 적기 때문에 수정을 해야 한다.
 
@@ -149,9 +149,9 @@ Elasticsearch 문서에 기술해 놓은 `mmapfs`의 설명이다.
 
 > The MMap FS type stores the shard index on the file system (maps to Lucene `MMapDirectory`) by mapping a file into memory (mmap). Memory mapping uses up a portion of the virtual memory address space in your process equal to the size of the file being mapped. Before using this class, be sure you have allowed plenty of [virtual address space](https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html).
 
-> MMap FS 유형은 파일을 메모리에 매핑하여(mmap) 파일 시스템 (Lucene의 `MMapDirectory`에 대응한다.)에 샤드 인덱스를 저장한다. 메모리 매핑은 매핑되는 파일과 동일한  크기의 프로세스 내 가상 메모리 주소 공간의 일부를 사용한다. 이 클래스를 사용하려면 충분한 가상 주소 공간을 허용했는지 확인해야 한다. 
+> MMap FS 유형은 파일을 메모리에 매핑하여(mmap) 파일 시스템 (Lucene의 `MMapDirectory`에 대응한다.)에 샤드 인덱스를 저장한다. 메모리 매핑은 매핑되는 파일과 동일한 크기의 프로세스 내 가상 메모리 주소 공간의 일부를 사용한다. 이 클래스를 사용하려면 충분한 가상 주소 공간을 허용했는지 확인해야 한다. 
 
-여기서 `mmapfs`는 Elasticsearch의 인덱스를 저장하고 접근하는 [여러 파일 시스템 구현 유형들](https://www.elastic.co/guide/en/elasticsearch/reference/current/index-modules-store.html) 중 하나라는 사실을 알 수 있다.  
+여기서 `mmapfs`는 Elasticsearch의 인덱스를 저장하고 접근하는 [여러 파일 시스템 구현 유형들](https://www.elastic.co/guide/en/elasticsearch/reference/current/index-modules-store.html) 중 하나라는 사실을 알 수 있다.
 
 또 'file system'을 언급하는 부분에서 'Lucene의 `MMapDirectory`'가 언급된다. 
 
@@ -159,7 +159,7 @@ Elasticsearch 문서에 기술해 놓은 `mmapfs`의 설명이다.
 
 ### 🕵🏼 추측 3
 
-- Elasticsearch가 `mmapfs`  저장소 유형을 이용해 [인덱스(Index)](https://esbook.kimjmin.net/03-cluster/3.2-index-and-shards)를 저장하는 과정에서 `mmap`을 이용한 빈번한 메모리 매핑 작업이 발생하고, 그 결과로 많은 메모리 맵 파일이 생길 수 있다.
+- Elasticsearch가 `mmapfs` 저장소 유형을 이용해 [인덱스(Index)](https://esbook.kimjmin.net/03-cluster/3.2-index-and-shards)를 저장하는 과정에서 `mmap`을 이용한 많은 수의 메모리 매핑 작업이 발생할 수 있고, 그 결과로 많은 메모리 맵 파일이 생성될 수 있다.
 
 - 그러나 자세한 저장 원리는 Elasticsearch 공식 문서에 더 이상 나와 있지 않다. 
 
@@ -171,7 +171,7 @@ Elasticsearch는 정보검색 라이브러리인 [Lucene](https://lucene.apache.
 
 Elasticsearch는 검색 요청이 들어오면 저장된 인덱스 파일에 빠르게 접근해야 한다. 이를 위해 Elasticsearch는 [메모리 매핑](https://ko.wikipedia.org/wiki/%EB%A9%94%EB%AA%A8%EB%A6%AC_%EB%A7%B5_%ED%8C%8C%EC%9D%BC) 기법을 이용하여 인덱스를 관리한다.
 
-책  『Elasticsearch in Action』에서 쓰인 `MMapDirectory` 설명을 참고해보자.
+책 『Elasticsearch in Action』에서 쓰인 `MMapDirectory` 설명을 참고해보자.
 
 > MMapDirectory takes advantage of file system caches by asking the operating system to map the needed files in virtual memory in order to access that memory directly. To Elasticsearch, it looks as if all the files are available in memory, but that doesn’t have to be the case. If your index size is larger than your available physical memory, the operating system will happily take unused files out of the caches to make room for new ones that need to be read. If Elasticsearch needs those uncached files again, they’ll be loaded in memory while other unused files are taken out and so on. The virtual memory used by MMapDirectory works similarly to the system’s virtual memory (swap), where the operating system uses the disk to page out unused memory in order to be able to serve multiple applications.
 
@@ -181,7 +181,7 @@ Elasticsearch는 검색 요청이 들어오면 저장된 인덱스 파일에 빠
 
 이처럼 Elasticsearch는 운영 체제를 이용하여 인덱스 파일들을 메모리에 가상으로 매핑하고, 파일 시스템 캐시*를 생성한다.
 
-💡  [`파일 시스템 캐시(File System Cache)`](https://docs.oracle.com/cd/E19424-01/820-4811/anobm/index.html): `최근에 디스크에서 읽은 데이터들을 보관한다. 최근에 디스크에서 읽은 데이터를 보관하기 때문에 이후 응용 프로그램은 디스크에서 데이터를 다시 읽을 필요가 없고 캐시에서 데이터를 가져올 수 있다.`
+💡 [`파일 시스템 캐시(File System Cache)`](https://docs.oracle.com/cd/E19424-01/820-4811/anobm/index.html): `최근에 디스크에서 읽은 데이터들을 보관한다. 최근에 디스크에서 읽은 데이터를 보관하기 때문에 이후 응용 프로그램은 디스크에서 데이터를 다시 읽을 필요가 없고 캐시에서 데이터를 가져올 수 있다.`
 
 
 ### 🙆🏻 아하!
@@ -199,8 +199,6 @@ Elasticsearch에서 사용하는 저장소 유형은 [`hybridfs`](https://www.el
 생각보다 글 쓰는 게 매우 힘들었다. 특정 값을 왜 수정해야 할까를 찾아보자는 가벼운 마음에서 시작한 것이 가상 메모리, 메모리 매핑 등의 저수준 개념부터 Lucene, Java의 클래스까지 뜯어보게 되는 눈덩이 효과를 경험했다. 
 
 'Elasticsearch 문서에서 이거 수정하라고 했어요. `vm.max_map_count` 값을 수정하면 돼요!' 라고 간단히 쓰고 끝내기엔 내가 애매하게 알거나 모르는 개념들이 너무 많았다. 
-
-좋은 자료들을 찾아도 해석 실력이 부족하거나, 해석을 해도 그걸 알아들을 만큼의 배경 지식이 부족해 결국 인용하지 못한 자료들도 있었다.
 
 덕분에 메모리 관리와 Elasticsearch의 인덱스 저장 방식에 대해 깊은 공부를 할 수 있었던 계기가 되었다. 호기심은 좋은 것이다... 
 
