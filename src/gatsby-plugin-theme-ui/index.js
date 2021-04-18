@@ -134,6 +134,7 @@ const theme = merge(tailwind, {
       pl: 4,
       p: {
         fontStyle: `italic`,
+        color: `#656565`,
       },
     },
     table: {

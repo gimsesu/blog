@@ -55,7 +55,7 @@ Stack을 구성하는 제품들은 기본적으로 무료 사용이 가능한 �
 #### Elasticsearch
 
 
-[Elasticsearch](https://www.elastic.co/guide/en/elasticsearch/reference/current/elasticsearch-intro.html)는 Stack의 핵심기능이다. Apache Lucene을 기반으로 구축된 분산형 RESTful 검색 및 분석 엔진으로써 다양한 형식의 문서 파일을 검색하고 색인화할 수 있다.
+[Elasticsearch](https://www.elastic.co/guide/en/elasticsearch/reference/current/elasticsearch-intro.html)는 Stack의 핵심기능이다. Apache Lucene을 기반으로 구축된 분산형 RESTful 검색 및 분석 엔진으로써 다양한 형식의 문서 파일을 검색하고 저장(색인화)할 수 있다.
 
 #### Logstash
 
@@ -87,7 +87,7 @@ Stack은 아래와 같은 흐름으로 로그를 수집하고 관리한다.
 
 - 수집 - 여러 데이터 소스에서 로그를 수집하고 전달
 - 가공 - 수월한 분석을 위해 로그 메시지를 정규화
-- 저장 - 로그 데이터 저장 및 색인화
+- 저장 - 로그 데이터 저장(색인화)
 - 검색 및 분석 - 데이터를 검색하거나 데이터들을 바탕으로 시각화 및 대시 보드를 생성하여 분석한다.
 
 각 과정을 담당하는 제품은 다음과 같다.

@@ -1,0 +1,229 @@
+---
+title: Elasticsearch 설치 시 vm.max_map_count 값 변경하기
+date: 2021-04-18
+slug: "/elasticsearch-change-vm-max-map-count"
+description: Elasticsearch를 설치할 때 Linux kernel parameter인 "vm.max_map_count" 값을 변경하는 방법과 그 이유를 알아본다.
+tags:
+  - Elastic Stack
+  - Docker
+  - Linux
+  - Computer Science
+---
+
+
+리눅스 환경에서 Elasticsearch가 정상적으로 작동하기 위해서는 `vm.max_map_count` 값을 변경해야 한다. 
+
+`vm.max_map_count`는 무엇이고, 왜 이 값을 변경해야 하는지 알아보자.
+
+## 🧰 준비물
+
+- Elasticsearch v7.x
+- Ubuntu 18.04.x LTS
+- Docker
+
+## vm.max_map_count is too low
+
+Docker를 이용해 Elasticsearch를 설치했으나 실행되지 않았다. 해당 도커 컨테이너의 로그를 확인하니 이런 에러가 떴다. 
+
+```shell
+$ sudo docker logs es01
+
+ERROR: [1] bootstrap checks failed 
+[1]: max virtual memory areas vm.max_map_count [65530] is too low, increase to at least [262144]
+```
+
+ [Bootstrap 검사 단계](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/bootstrap-checks.html)에서 `vm.max_map_count`의 값이 부족하니 상향하라는 내용이었다.
+
+###  올리지 뭐
+
+`vm.max_map_count`의 기본값은 Linux의 경우 `65,530`이다. Elasticsearch를 실행하기 위해서는 최소 `262,144`로 [상향하는 것을 권장한다.](https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html#_set_vm_max_map_count_to_at_least_262144)
+
+```shell
+$ sysctl vm.max_map_count
+
+vm.max_map_count = 65530
+```
+
+변경 방법은 OS에 따라 다를 수 있다. 나는 Linux(Ubuntu) 환경에서 Elasticsearch를 사용하고 있다.
+
+값을 변경하는 방식은 크게 두 가지가 있다. '일시적' 혹은 '영구적'
+
+### 일시적 변경
+
+현재 세션 기간 동안만 지속된다. 이 방식은 호스트가 재부팅되면 원래 값으로 재설정된다.
+
+```shell
+sysctl -w vm.max_map_count=262144
+```
+
+### 영구적 변경
+
+`/etc/sysctl.conf` 파일을 직접 편집한 후, 호스트를 재부팅한다. 혹은 `sysctl -p` 명령어를 이용해 재부팅하지 않고 바로 변경 사항을 적용할 수 있다.
+
+```shell
+$ vi /etc/sysctl.conf
+
+# 작성
+vm.max_map_count=262144
+```
+
+나는 Elasticsearch를 프로덕션 레벨에서 사용하고 싶었기 때문에 영구적으로 변경하는 방식을 택했다.
+
+### 확인
+
+값을 변경 후 다음 명령어로 확인할 수 있다.
+
+```shell
+$ sysctl vm.max_map_count
+
+vm.max_map_count = 262144
+```
+
+이후 Elasticsearch 컨테이너를 재실행하니 정상적으로 작동하는 것을 확인할 수 있었다.
+
+### 하라고 해서 하긴 했는데...
+
+친절한 에러 메시지 덕에 수월하게 문제를 해결했다. 하지만 호기심이 남는다. `vm.max_map_count`는 무엇이고, 왜 수정해야 하는 걸까? 🕵🏼
+
+## vm.max_map_count
+
+[kernel.org](https://www.kernel.org/doc/Documentation/sysctl/vm.txt)에 작성된 설명이다.
+
+> **max_map_count:**
+>
+> This file contains the maximum number of memory map areas a process
+> may have. Memory map areas are used as a side-effect of calling
+> malloc, directly by mmap, mprotect, and madvise, and also when loading shared libraries.
+>
+> While most applications need less than a thousand maps, certain
+> programs, particularly malloc debuggers, may consume lots of them,
+> e.g., up to one or two maps per allocation.
+>
+> The default value is 65536.
+
+
+
+> 이 파일은 프로세스가 가질 수 있는 **최대 메모리 맵 영역 수**를 포함한다. 메모리 맵 영역은 mmap, mprotect, 그리고 madvise에 의한 malloc 호출의 직접적인 부작용으로 사용되며, 또한 공유 라이브러리를 로드할 때도 사용된다.
+>
+> 대부분의 응용 프로그램에는 천 개 미만의 맵이 필요하지만 특정 프로그램(특히 malloc debugger)은 더 많은 맵을 소비할 수 있습니다.
+> 예: 할당 당 최대 1개 또는 2개의 맵
+>
+> 기본값은 65,536입니다.
+
+`vm.max_map_count` 변수는 `/proc/sys/vm/max_map_count` 파일을 가리킨다. 이 파일은 Linux kernel의 메모리 맵* 영역의 최대 개수를 조작할 수 있다. 
+
+메모리 매핑 작업이 많이 일어나는 프로세스일수록 가상 메모리에서의 주소 공간인 [가상 주소 공간](https://ko.wikipedia.org/wiki/%EA%B0%80%EC%83%81_%EC%A3%BC%EC%86%8C_%EA%B3%B5%EA%B0%84)을 많이 필요로 한다. 
+
+💡 [`Memory mapping`](https://jihooyim1.gitbooks.io/unixbasic/content/contents/08.html): `파일을 프로세스의 메모리에 매핑하는 것이다. 즉 프로세스에 전달할 데이터가 저장된 파일을 직접 프로세스의 가상 주소 공간으로 매핑한다. read와 write 함수를 사용하지 않고도 프로그램 내부에서 정의한 변수를 사용해 파일에서 데이터를 읽거나 쓸 수 있다.`
+
+### 🕵🏼 추측 1
+
+- Elasticsearch는 자신의 가상 주소 공간에 특정 파일을 매핑하는 작업이 빈번하게 일어나는 듯 하다.  
+
+## Virtual memory
+
+Elasticsearch를 프로덕션 레벨에서 사용하려 한다면 실행 전 [충분한 가상 메모리의 확보를 권장](https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html)하며 그 방법으로 `vm.max_map_count`의 조작법을 알려준다.
+
+> Elasticsearch uses a `mmapfs` directory by default to store its indices. The default operating system limits on mmap counts is likely to be too low, which may result in out of memory exceptions.
+
+
+
+> Elasticsearch는 기본적으로 `mmapfs` 디렉터리를 사용하여 인덱스를 저장한다. 기본 운영 체제에서 설정한 mmap 
+> 개수의 제한은 너무 낮기 때문에 메모리 부족 예외가 발생할 수 있다.
+
+그리고 이 방법을 언급하는 과정에서 낯선 용어인 '[`mmapfs`](https://www.elastic.co/guide/en/elasticsearch/reference/current/index-modules-store.html#mmapfs) 디렉터리'와 '`mmap`*'이 나온다.
+
+위 인용문에서는 `mmap` 개수의 제한이 너무 낮다'라고 했다. `mmap`은 메모리 매핑을 실행하고, 그 결과물은 [메모리 맵 파일(memory mapped file)](https://ko.wikipedia.org/wiki/%EB%A9%94%EB%AA%A8%EB%A6%AC_%EB%A7%B5_%ED%8C%8C%EC%9D%BC)이다.
+
+💡 [`mmap`](https://en.wikipedia.org/wiki/Mmap): `유닉스(Unix) 시스템 호출(System call. syscall)로서, 메모리 매핑을 실행하는 함수. `  
+
+### 🕵🏼 추측 2
+
+- Elasticsearch가 `mmapfs` 디렉터리를 이용하여 [인덱스(Index)](https://esbook.kimjmin.net/03-cluster/3.2-index-and-shards)를 저장하는 과정에서 `mmap`을 이용한 빈번한 메모리 매핑 작업이 발생하고, 그 결과로 많은 메모리 맵 파일이 생길 수 있다.
+
+- 생성되는 메모리 맵 파일의 수는, Linux의 경우 기본적으로 정해놓은 `max_map_count`가 Elasticsearch 관점에서는 매우 적기 때문에 수정을 해야 한다.
+
+## mmapfs
+
+Elasticsearch 문서에 기술해 놓은 `mmapfs`의 설명이다.
+
+> The MMap FS type stores the shard index on the file system (maps to Lucene `MMapDirectory`) by mapping a file into memory (mmap). Memory mapping uses up a portion of the virtual memory address space in your process equal to the size of the file being mapped. Before using this class, be sure you have allowed plenty of [virtual address space](https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html).
+
+> MMap FS 유형은 파일을 메모리에 매핑하여(mmap) 파일 시스템 (Lucene의 `MMapDirectory`에 대응한다.)에 샤드 인덱스를 저장한다. 메모리 매핑은 매핑되는 파일과 동일한  크기의 프로세스 내 가상 메모리 주소 공간의 일부를 사용한다. 이 클래스를 사용하려면 충분한 가상 주소 공간을 허용했는지 확인해야 한다. 
+
+여기서 `mmapfs`는 Elasticsearch의 인덱스를 저장하고 접근하는 [여러 파일 시스템 구현 유형들](https://www.elastic.co/guide/en/elasticsearch/reference/current/index-modules-store.html) 중 하나라는 사실을 알 수 있다.  
+
+또 'file system'을 언급하는 부분에서 'Lucene의 `MMapDirectory`'가 언급된다. 
+
+`mmapfs`는 Elasticsearch에서 인덱스를 저장하는 파일 시스템 구현 유형 중의 하나다. `MMapDirectory` 말고는 달리 알아낸 새로운 사실이 없다.
+
+### 🕵🏼 추측 3
+
+- Elasticsearch가 `mmapfs`  저장소 유형을 이용해 [인덱스(Index)](https://esbook.kimjmin.net/03-cluster/3.2-index-and-shards)를 저장하는 과정에서 `mmap`을 이용한 빈번한 메모리 매핑 작업이 발생하고, 그 결과로 많은 메모리 맵 파일이 생길 수 있다.
+
+- 그러나 자세한 저장 원리는 Elasticsearch 공식 문서에 더 이상 나와 있지 않다. 
+
+- mmapfs는 Lucene의 `MMapDirectory`에 대응하는 파일 시스템 구현이다. MMapDirectory가 어떻게 인덱스를 저장하고 접근하는지 알면 메모리 매핑이 많이 일어나는 이유를 알 수 있을 것이다. 
+
+## MMapDirectory
+
+Elasticsearch는 정보검색 라이브러리인 [Lucene](https://lucene.apache.org/core/)을 기반으로 만들어졌다. [`MMapDirectory`](https://lucene.apache.org/core/6_3_0/core/org/apache/lucene/store/MMapDirectory.html)는 Lucene의 디렉터리 구현이다.
+
+Elasticsearch는 검색 요청이 들어오면 저장된 인덱스 파일에 빠르게 접근해야 한다. 이를 위해 Elasticsearch는 [메모리 매핑](https://ko.wikipedia.org/wiki/%EB%A9%94%EB%AA%A8%EB%A6%AC_%EB%A7%B5_%ED%8C%8C%EC%9D%BC) 기법을 이용하여 인덱스를 관리한다.
+
+책  『Elasticsearch in Action』에서 쓰인 `MMapDirectory` 설명을 참고해보자.
+
+> MMapDirectory takes advantage of file system caches by asking the operating system to map the needed files in virtual memory in order to access that memory directly. To Elasticsearch, it looks as if all the files are available in memory, but that doesn’t have to be the case. If your index size is larger than your available physical memory, the operating system will happily take unused files out of the caches to make room for new ones that need to be read. If Elasticsearch needs those uncached files again, they’ll be loaded in memory while other unused files are taken out and so on. The virtual memory used by MMapDirectory works similarly to the system’s virtual memory (swap), where the operating system uses the disk to page out unused memory in order to be able to serve multiple applications.
+
+
+
+> MMapDirectory는 해당 메모리에 직접 액세스 하기 위해 필요한 파일을 가상 메모리에 매핑하도록 운영 체제에 요청하여 파일 시스템 캐시를 활용한다. Elasticsearch에게는 모든 파일이 메모리에서 사용 가능한 것처럼 보이지만 반드시 그럴 필요는 없다. 인덱스 크기가 사용 가능한 실제 메모리보다 크면 운영 체제는 기꺼이 캐시에서 사용하지 않는 파일을 가져와서 읽고자 하는 새 파일을 위한 공간을 만든다. Elasticsearch에 캐싱되지 않은 파일이 다시 필요한 경우 해당 파일은 메모리에 로드되고 다른 사용되지 않는 파일은 제거된다. MMapDirectory에서 사용하는 가상 메모리는 시스템의 [가상 메모리 (스왑)](http://www.simpleisbest.net/post/2011/05/02/Virtual-Memory-vs-Physical-Memory.aspx)와 유사하게 작동한다. 여기서 운영 체제는 디스크를 사용하여 여러 응용 프로그램을 지원할 수 있도록 사용되지 않은 메모리를 [페이징](https://ko.wikipedia.org/wiki/%ED%8E%98%EC%9D%B4%EC%A7%95) 한다.
+
+이처럼 Elasticsearch는 운영 체제를 이용하여 인덱스 파일들을 메모리에 가상으로 매핑하고, 파일 시스템 캐시*를 생성한다.
+
+💡  [`파일 시스템 캐시(File System Cache)`](https://docs.oracle.com/cd/E19424-01/820-4811/anobm/index.html): `최근에 디스크에서 읽은 데이터들을 보관한다. 최근에 디스크에서 읽은 데이터를 보관하기 때문에 이후 응용 프로그램은 디스크에서 데이터를 다시 읽을 필요가 없고 캐시에서 데이터를 가져올 수 있다.`
+
+
+### 🙆🏻 아하!
+
+
+
+이러한 방식으로 인덱스를 관리하는 것은 굉장히 빠른 성능을 보장한다. 그러나 Linux의 경우 응용 프로그램이 한 번에 너무 많은 파일을 열거나 너무 많은 메모리를 매핑하는 것을 방지하는 제한이 있는데, 그게 바로 `vm.max_map_count` 값이다. 
+
+Elasticsearch에서 사용하는 저장소 유형은 [`hybridfs`](https://www.elastic.co/guide/en/elasticsearch/reference/current/index-modules-store.html#hybridfs)다. `hybridfs`는 운영 체제에 따라 `mmapfs`와 [`noifs`](https://www.elastic.co/guide/en/elasticsearch/reference/current/index-modules-store.html#niofs)를 적절히 선택하여 사용한다. 따라서 Elasticsearch를 설치할 때 `hybridfs`나 `mmapfs`를 사용한다면 `vm.max_map_count` 사전에 설정해주어야 한다.
+
+
+
+## 결론
+
+생각보다 글 쓰는 게 매우 힘들었다. 특정 값을 왜 수정해야 할까를 찾아보자는 가벼운 마음에서 시작한 것이 가상 메모리, 메모리 매핑 등의 저수준 개념부터 Lucene, Java의 클래스까지 뜯어보게 되는 눈덩이 효과를 경험했다. 
+
+'Elasticsearch 문서에서 이거 수정하라고 했어요. `vm.max_map_count` 값을 수정하면 돼요!' 라고 간단히 쓰고 끝내기엔 내가 애매하게 알거나 모르는 개념들이 너무 많았다. 
+
+좋은 자료들을 찾아도 해석 실력이 부족하거나, 해석을 해도 그걸 알아들을 만큼의 배경 지식이 부족해 결국 인용하지 못한 자료들도 있었다.
+
+덕분에 메모리 관리와 Elasticsearch의 인덱스 저장 방식에 대해 깊은 공부를 할 수 있었던 계기가 되었다. 호기심은 좋은 것이다... 
+
+---
+
+
+## 📜참고
+
+
+- Radu, G., Matthew, L. H., and Roy R. (2015). Chapter 10. Improving performance. Elasticsearch in Action. Manning Publications.
+- [Elasticsearch: Max virtual memory areas vm.max_map_count [65530] is too low, increase to at least [262144] - Stack Overflow(Website. 2021.04.15)](https://stackoverflow.com/questions/51445846/elasticsearch-max-virtual-memory-areas-vm-max-map-count-65530-is-too-low-inc)
+- Elasticsearch Guide [7.12] | Elastic(Website. 2021.04.15)
+  - [Install Elasticsearch with Docker](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/docker.html#docker-prod-prerequisites)
+  - [Virtual memory](https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html)
+  - [Store](https://www.elastic.co/guide/en/elasticsearch/reference/current/index-modules-store.html#mmapfs)
+- [Documentation for /proc/sys/vm/*	kernel version 2.6.29(Website. 2021.04.15)](https://www.kernel.org/doc/Documentation/sysctl/vm.txt)
+- [메모리 맵 - 위키백과, 우리 모두의 백과사전(Website. 2021.04.15)](https://ko.wikipedia.org/wiki/%EB%A9%94%EB%AA%A8%EB%A6%AC_%EB%A7%B5)
+- [8. 메모리 매핑 · UNIXBasic(Website. 2021.04.15)](https://jihooyim1.gitbooks.io/unixbasic/content/contents/08.html)
+- [mmap - Wikipedia(Website. 2021.04.15)](https://en.wikipedia.org/wiki/Mmap)
+- [Apache Lucene - Apache Lucene Core(Website. 2021.04.16)](https://lucene.apache.org/core/)
+- [MMapDirectory (Lucene 6.3.0 API)(Website. 2021.04.17)](https://lucene.apache.org/core/6_3_0/core/org/apache/lucene/store/MMapDirectory.html)
+- [Use Lucene’s MMapDirectory on 64bit platforms, please!(Website. 2021.04.16)](https://blog.thetaphi.de/2012/07/use-lucenes-mmapdirectory-on-64bit.html)
+- [메모리 맵 파일 - 위키백과, 우리 모두의 백과사전(Website. 2021.04.17)](https://ko.wikipedia.org/wiki/%EB%A9%94%EB%AA%A8%EB%A6%AC_%EB%A7%B5_%ED%8C%8C%EC%9D%BC)
+- [SimpleIsBest.NET | 가상 메모리의 기본 개념(Website. 2021.04.18)](http://www.simpleisbest.net/post/2011/05/02/Virtual-Memory-vs-Physical-Memory.aspx)
+- [페이징 - 위키백과, 우리 모두의 백과사전(Website. 2021.04.18)](https://ko.wikipedia.org/wiki/%ED%8E%98%EC%9D%B4%EC%A7%95)
+
