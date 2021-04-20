@@ -72,8 +72,6 @@ export default function TableOfContents(props) {
     const idList = getIds(items);
     const activeId = useActiveId(idList);
 
-    console.log(items)
-
     return (
         <nav
             sx={{
