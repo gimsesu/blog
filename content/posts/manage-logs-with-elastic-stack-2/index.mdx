@@ -21,9 +21,7 @@ tags:
 
 앞서 ['Elastic Stack으로 내 App의 Log를 관리해보자(1) - Elasticsearch, Kibana를 Docker로 설치하기'](https://www.gimsesu.me/manage-logs-with-elastic-stack-1)에서 Elastic Stack을 이루는 요소 중 Elasticsearch와 Kibana를 설치해 보았다. 
 
-이제 Stack에서 다루려는 데이터를 산지 직송해주는 경량 데이터 전달자 Beats를 설치할 차례다.
-
-이번 글에서는 로그(Log) 수집기인 Filebeat를 설치하고, 애플리케이션에 부착하여 로그를 수집하고, 그 결과물을 Kibana에서 확인하는 과정을 기술한다.
+이번 글에서는 로그(Log) 수집기인 Filebeat를 설치하여 애플리케이션의 로그를 수집하고, Kibana에서 그 결과물을 확인하는 과정을 기술한다.
 
 
 ## 👾 Filebeat가 뭔가요?
@@ -204,7 +202,7 @@ Kibana는 Elasticsearch에 접근해 사전에 설정된 `filebeat-*` 인덱스 
 
 Filebeat를 설치하여 로그를 수집하여 저장하고, 최종적으로 Kibana에서 해당 데이터를 확인하는 방법을 알아보았다. 이후 서비스를 운영하며 이슈가 발생하면, Kibana를 이용해 이슈의 원인이 될 만한 로그를 편리하게 검색할 수 있다. 
 
-추후 기본적으로 제공하는 대시보드 구성을 통해 로그 데이터들을 시각화하여 효과적으로 데이터를 관리할 수도 있다.
+추후 기본적으로 제공하는 대시보드 구성을 통해 로그 데이터를 시각화하여 효과적으로 관리할 수도 있다.
 
 다음 글에서는 Filebeat가 로그를 수집하는 방법과 그 구조에 대해 알아보자.
 
