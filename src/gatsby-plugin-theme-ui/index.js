@@ -68,6 +68,9 @@ const theme = merge(tailwind, {
         ul: {
           mt: `0rem`,
         },
+        ol: {
+          mt: `0rem`,
+        },
         li: {
           pb: `0rem`,
         },
@@ -83,6 +86,9 @@ const theme = merge(tailwind, {
         "--x-height-multiplier": 0.35,
         pb: `0.5rem`,
         ul: {
+          mt: `0rem`,
+        },
+        ol: {
           mt: `0rem`,
         },
         li: {
