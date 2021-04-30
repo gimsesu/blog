@@ -11,6 +11,11 @@ tags:
   - Docker
 ---
 
+
+앞서 ['Elastic Stack으로 내 App의 Log를 관리해보자(1) - Elasticsearch, Kibana를 Docker로 설치하기'](https://www.gimsesu.me/manage-logs-with-elastic-stack-1)에서 Elastic Stack을 이루는 요소 중 Elasticsearch와 Kibana를 설치해 보았다. 
+
+이번 글에서는 로그(Log) 수집기인 Filebeat를 설치하여 애플리케이션의 로그를 수집하고, Kibana에서 그 결과물을 확인하는 과정을 기술한다.
+
 ## 🧰 준비물
 
 - Elasticsearch v7.x
@@ -18,11 +23,6 @@ tags:
 - Filebeat v7.x
 - Ubuntu 18.04.x LTS
 - Filebeat를 부착할 애플리케이션 서버(Application Server)
-
-앞서 ['Elastic Stack으로 내 App의 Log를 관리해보자(1) - Elasticsearch, Kibana를 Docker로 설치하기'](https://www.gimsesu.me/manage-logs-with-elastic-stack-1)에서 Elastic Stack을 이루는 요소 중 Elasticsearch와 Kibana를 설치해 보았다. 
-
-이번 글에서는 로그(Log) 수집기인 Filebeat를 설치하여 애플리케이션의 로그를 수집하고, Kibana에서 그 결과물을 확인하는 과정을 기술한다.
-
 
 ## 👾 Filebeat가 뭔가요?
 
@@ -221,3 +221,4 @@ Filebeat를 설치하여 로그를 수집하여 저장하고, 최종적으로 Ki
 - Elasticsearch Guide [7.12] | Elastic(Website)
   - [Index templates(2021.04.26)](https://www.elastic.co/guide/en/elasticsearch/reference/7.12/index-templates.html)
   - [ILM overview(2021.04.26)](https://www.elastic.co/guide/en/elasticsearch/reference/current/overview-index-lifecycle-management.html)
+
