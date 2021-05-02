@@ -11,6 +11,7 @@ const theme = merge(tailwind, {
     toggleIcon: tailwind.colors.gray[8],
     heading: tailwind.colors.black,
     divide: tailwind.colors.gray[4],
+    blockquote: `#6a737d`,
     modes: {
       dark: {
         text: tailwind.colors.gray[4],
@@ -21,6 +22,7 @@ const theme = merge(tailwind, {
         heading: tailwind.colors.white,
         divide: tailwind.colors.gray[8],
         muted: tailwind.colors.gray[8],
+        blockquote: `#8b949e`,
       },
     },
   },
@@ -140,7 +142,7 @@ const theme = merge(tailwind, {
       pl: 4,
       p: {
         fontStyle: `italic`,
-        color: `#656565`,
+        color: `blockquote`,
       },
     },
     table: {
