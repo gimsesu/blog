@@ -48,8 +48,8 @@ const theme = merge(tailwind, {
     },
     p: {
       fontSize: [1, 1, 1, `18px`],
-      fontFamily: `"Noto Serif KR"`,
-      fontWeight: `500`,
+      // fontFamily: `"Noto Serif KR"`,
+      // fontWeight: `500`,
       mt: `0rem`,
       mb: `1rem`,
       letterSpacing: `-0.02em`,
