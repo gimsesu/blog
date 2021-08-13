@@ -30,7 +30,7 @@ const theme = merge(tailwind, {
     body: `"IBM Plex Sans KR", "IBM Plex Sans", -apple-system, BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji"`,
   },
   fontWeights: {
-    body: 450,
+    body: 400,
   },
   lineHeights: {
     body: `170%`,
