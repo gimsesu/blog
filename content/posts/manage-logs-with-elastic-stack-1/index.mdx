@@ -1,17 +1,15 @@
 ---
-title: 📚 Elastic Stack으로 내 App의 Log를 관리해보자(1) - Elasticsearch, Kibana를 Docker로 설치하기
+title: Elastic Stack으로 내 App의 Log를 관리해보자(1) - Elasticsearch, Kibana를 Docker로 설치하기
 date: 2021-04-14
 slug: "/manage-logs-with-elastic-stack-1"
 description: Elastic Stack을 이용해 App에서 발생하는 로그(Log) 데이터를 관리한 경험을 공유합니다.
 tags:
-  - Elastic Stack
   - Elasticsearcch
   - Kibana
-  - Filebeat
   - Docker
 ---
 
-## 🧰 준비물
+## 준비물
 
 - Elasticsearch v7.x
 - Kibana v7.x
@@ -80,7 +78,7 @@ Beats를 통해 수집한 데이터는 Elasticsearch로 직접 전송해 바로 
 
 Kibana는 Elasticsearch를 데이터 저장소로 사용하도록 설계됐다. 데이터는 구조화되거나 구조화되지 않은 텍스트, 숫자, 시계열 데이터, 지리 공간 데이터, 로그, 메트릭, 보안 이벤트 등 다양한 형식을 포함한다. 
 
-## 🤨 로그 수집 그거 어떻게 하는 건데
+## 로그 수집 그거 어떻게 하는 건데
 
 Stack은 아래와 같은 흐름으로 로그를 수집하고 관리한다. 
 
@@ -263,7 +261,7 @@ Elastic Stack을 도입하려는 이유와 Stack의 정의, 구성 요소들을 
 
 ---
 
-## 📜 참고
+## 참고
 
 - [What is Elastic Stack? - Definition from WhatIs.com(Website. 2021.04.13)](https://searchitoperations.techtarget.com/definition/Elastic-Stack#:~:text=Elastic%20Stack%20is%20a%20group,that%20data%20in%20real%20time.&text=Elastic%20Stack%20can%20be%20deployed,as%20a%20Service%20(SaaS).)
 - [What is Elasticsearch? | Elasticsearch Guide [7.12] | Elastic(Website. 2021.04.13)](https://www.elastic.co/guide/en/elasticsearch/reference/current/elasticsearch-intro.html)

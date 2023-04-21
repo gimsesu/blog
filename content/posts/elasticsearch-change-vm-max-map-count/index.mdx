@@ -4,10 +4,7 @@ date: 2021-04-18
 slug: "/elasticsearch-change-vm-max-map-count"
 description: Elasticsearch를 설치할 때 Linux kernel parameter인 "vm.max_map_count" 값을 변경하는 방법과 그 이유를 알아본다.
 tags:
-  - Elastic Stack
-  - Docker
-  - Linux
-  - Computer Science
+  - Elasticsearch
 ---
 
 
@@ -15,7 +12,7 @@ Linux 환경에서 Elasticsearch가 정상적으로 작동하기 위해서는 `v
 
 이 값은 무엇이고, 왜 변경해야 하는지를 알아보자.
 
-## 🧰 준비물
+## 준비물
 
 - Elasticsearch v7.x
 - Ubuntu 18.04.x LTS
@@ -114,7 +111,7 @@ vm.max_map_count는 변수로서, `/proc/sys/vm/max_map_count` 파일을 가리�
 
 > 💡 [`Memory mapping`](https://jihooyim1.gitbooks.io/unixbasic/content/contents/08.html): 파일을 프로세스의 메모리에 매핑하는 것이다. 즉 프로세스에 전달할 데이터가 저장된 파일을 직접 프로세스의 가상 주소 공간으로 매핑한다. read와 write 함수를 사용하지 않고도 프로그램 내부에서 정의한 변수를 사용해 파일에서 데이터를 읽거나 쓸 수 있다.
 
-### 🕵🏼 추측 1
+### 추측 1
 
 - Elasticsearch는 자신의 가상 주소 공간에 특정한 파일을 매핑하는 작업을 많이 수행하는 듯하다.
 
@@ -136,7 +133,7 @@ Elasticsearch를 프로덕션 레벨에서 사용하려 한다면 실행 전 [�
 
 
 
-### 🕵🏼 추측 2
+### 추측 2
 
 - Elasticsearch가 mmapfs 디렉터리를 이용하여 [인덱스(Index)](https://esbook.kimjmin.net/03-cluster/3.2-index-and-shards)를 저장하는 과정에서 mmap을 이용한 많은 수의 메모리 매핑 작업이 발생할 수 있고, 그 결과로 많은 메모리 맵 파일이 생성될 수 있다.
 
@@ -155,7 +152,7 @@ Elasticsearch 문서에 기술해 놓은 mmapfs의 설명이다.
 또 'file system'을 언급하는 부분에서 'Lucene의 `MMapDirectory`'가 나온다. 
 
 
-### 🕵🏼 추측 3
+### 추측 3
 
 - Elasticsearch가 mmapfs 저장소 유형을 이용해 [인덱스(Index)](https://esbook.kimjmin.net/03-cluster/3.2-index-and-shards)를 저장하는 과정에서 mmap을 이용한 많은 수의 메모리 매핑 작업이 발생할 수 있고, 그 결과로 많은 메모리 맵 파일이 생성될 수 있다.
 
@@ -177,7 +174,7 @@ Elasticsearch는 정보검색 라이브러리인 [Lucene](https://lucene.apache.
 
 
 
-### 🙆🏻 아하!
+### 아하!
 
 Elasticsearch는 운영 체제를 이용하여 인덱스 파일들을 가상 메모리에 가상으로 매핑하고 파일 시스템 캐시*를 생성한다. 덕분에 검색 요청이 들어오면 디스크(보조 기억 장치)에 접근할 필요 없이 캐시에 들어 있는 데이터를 가져와 신속하게 응답한다.
 
@@ -203,7 +200,7 @@ Elasticsearch에서 사용하는 기본 저장소 유형은 [`hybridfs`](https:/
 
 
 
-## 📜참고
+## 참고
 
 
 - Radu, G., Matthew, L. H., and Roy R. (2015). Chapter 10. Improving performance. Elasticsearch in Action. Manning Publications.
